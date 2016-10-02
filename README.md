@@ -20,7 +20,11 @@ Python (e.g. Python-2.7.12) installed
 
 ###Optimizations for PageSpeed Score
 
-####index.html
+1. pizzeria.jpg was replaced with compressed thumbnail; profilepic.jpg was compressed
+2. Google analytics js loading is shifted to the end of html body
+3. media="print" attribute for print.css
+4. Web fonts usage removed
+5. Styles.css was minified and inserted directly into index.html
 
 ###Getting rid of Jank
 
