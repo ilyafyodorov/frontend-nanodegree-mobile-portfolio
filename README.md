@@ -28,4 +28,6 @@ Python (e.g. Python-2.7.12) installed
 
 ###Getting rid of Jank
 
-2. Calculation of new pizza size after slider position change was taken out of the loop
+1. Move phase calculaton out of the loop to avoid jank from scrolling
+2. Debounce drawing on scrolling
+3. Calculation of new pizza size after slider position change was taken out of the loop
