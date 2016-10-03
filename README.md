@@ -28,6 +28,4 @@ Python (e.g. Python-2.7.12) installed
 
 ###Getting rid of Jank
 
-####views/js/main.js
-
-####pizza.html
+2. Calculation of new pizza size after slider position change was taken out of the loop

@@ -447,11 +447,19 @@ var resizePizzas = function(size) {
     return dx;
   }
 
+  
+  
+  
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
+
+  //All pizza elements whose size should be changed have the same size
+  //Find the size of the first pizza
+  var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[0], size);
+  var newwidth = (document.querySelectorAll(".randomPizzaContainer")[0].offsetWidth + dx) + 'px';
+
+  // Iterates through pizza elements on the page and changes their widths
+  for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
       document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
     }
   }
@@ -496,14 +504,39 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
-// Moves the sliding background pizzas based on scroll position
+// initialize latest scroll position
+var lastScroll = 0;
+// stopPaint flag
+var stopPaint;
+
+// function bound to scroll window event listener
+function onScrolling() {
+  lastScroll = window.scrollY;
+  requestPaint();
+}
+
+// requestAnimationFrame only on scroll and do it only once per frame
+function requestPaint() {
+  if (!stopPaint) {
+    requestAnimationFrame(updatePositions);
+  }
+  // debouncing: avoid painting several times
+  stopPaint = true;
+}
+
+// updates positions of pizzas
 function updatePositions() {
+  
+  //allow painting once
+  stopPaint = false;
   frame++;
   window.performance.mark("mark_start_frame");
-
+  // #optimize: pull currentScrollY out of for loop and fall back to latest known position
   var items = document.querySelectorAll('.mover');
+  var currentScrollY = lastScroll / 1250;
+  var phase;
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+    phase = Math.sin(currentScrollY + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
 
@@ -517,8 +550,8 @@ function updatePositions() {
   }
 }
 
-// runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+// runs on scroll
+window.addEventListener('scroll', onScrolling);
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
