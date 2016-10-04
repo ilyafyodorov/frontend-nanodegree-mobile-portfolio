@@ -31,3 +31,5 @@ Python (e.g. Python-2.7.12) installed
 1. Move phase calculaton out of the loop to avoid jank from scrolling
 2. Debounce drawing on scrolling
 3. Calculation of new pizza size after slider position change was taken out of the loop
+4. Removal of DOM requests (e.g. document.getElementById()) from loops
+5. Calculation of the number of pizzas visible in the background (instead of fixed 200)

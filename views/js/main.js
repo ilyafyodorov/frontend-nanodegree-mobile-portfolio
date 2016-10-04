@@ -447,9 +447,9 @@ var resizePizzas = function(size) {
     return dx;
   }
 
-  
-  
-  
+
+
+
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
 
@@ -458,9 +458,12 @@ var resizePizzas = function(size) {
   var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[0], size);
   var newwidth = (document.querySelectorAll(".randomPizzaContainer")[0].offsetWidth + dx) + 'px';
 
+  //var allResizePizzas = document.querySelectorAll(".randomPizzaContainer")
+  var allResizePizzas = document.getElementsByClassName("randomPizzaContainer");
+
   // Iterates through pizza elements on the page and changes their widths
-  for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+  for (var i = 0; i < allResizePizzas.length; i++) {
+      allResizePizzas[i].style.width = newwidth;
     }
   }
 
@@ -475,9 +478,9 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
+var pizzasDiv = document.getElementById("randomPizzas");
 // This for-loop actually creates and appends all of the pizzas when the page loads
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -526,7 +529,7 @@ function requestPaint() {
 
 // updates positions of pizzas
 function updatePositions() {
-  
+
   //allow painting once
   stopPaint = false;
   frame++;
@@ -534,10 +537,15 @@ function updatePositions() {
   // #optimize: pull currentScrollY out of for loop and fall back to latest known position
   var items = document.querySelectorAll('.mover');
   var currentScrollY = lastScroll / 1250;
-  var phase;
+
+  //There are only 5 possible phase values
+  var phase = [];
+  for (var i = 0; i < 5; i++) {
+    phase.push(Math.sin(currentScrollY + i) * 100);
+  }
+
   for (var i = 0; i < items.length; i++) {
-    phase = Math.sin(currentScrollY + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    items[i].style.left = items[i].basicLeft + phase[i%5] + 'px';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -557,7 +565,12 @@ window.addEventListener('scroll', onScrolling);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+
+  //calculate number of pizzas visible on the screen
+  var numPizzas = (Math.floor(window.innerHeight/s)+1)*8;
+
+
+  for (var i = 0; i < numPizzas; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
